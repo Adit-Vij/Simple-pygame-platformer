@@ -1,7 +1,7 @@
 import pygame
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self,x,y):
+    def __init__(self,x: int,y: int):
         super().__init__()
         self.image = pygame.Surface((50,50))
         self.image.fill((0,255,0))
@@ -22,7 +22,8 @@ class Player(pygame.sprite.Sprite):
         self.jump_dash_count = 0
 
     def update(self,keys,dt):
-        move_speed = self.speed*dt
+        #self.default_speed = self.speed
+        self.move_speed = self.speed*dt
         jump_strength = self.jump_strength*dt
         gravity = self.gravity*dt
         dash_speed = self.dash_speed*dt
@@ -32,9 +33,9 @@ class Player(pygame.sprite.Sprite):
         Left, Right, Jump
         '''
         if keys[pygame.K_d]:    #Move Right
-            self.rect.x += move_speed
+            self.rect.x += self.move_speed
         if keys[pygame.K_a]:    #Move Left
-            self.rect.x -= move_speed
+            self.rect.x -= self.move_speed
         if keys[pygame.K_SPACE] and self.is_on_ground:  #Jump Trigger
             self.is_jumping = True
         if self.is_jumping:    #Jump
@@ -52,7 +53,6 @@ class Player(pygame.sprite.Sprite):
         #Gravity
         self.velocity_y+= gravity
         self.rect.y += self.velocity_y
-        
 
         #Ground Check
         if self.rect.bottom > 600:

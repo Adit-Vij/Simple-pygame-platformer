@@ -1,6 +1,7 @@
 import sys
 import pygame
 from Player import Player
+from Obstacle import Obstacle
 
 #Initialize pygame
 pygame.init()
@@ -17,8 +18,13 @@ pygame.display.set_caption("Sample")
 #Create a Player Imstance
 player = Player (window_w // 2, window_h // 2)
 
+#Create a Obstacle Instance
+obstacle1 = Obstacle(600,600,100,50,player)
+
 #Create sprite group
 all_sprites = pygame.sprite.Group()
+#all_sprites.add(player)
+all_sprites.add(obstacle1)
 all_sprites.add(player)
 
 #Clock
@@ -38,7 +44,7 @@ while running:
         
     window.fill((0,0,0))
     all_sprites.draw(window)
-        
+
     pygame.display.flip()
         
 
