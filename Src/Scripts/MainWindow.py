@@ -5,8 +5,6 @@ from Platform import Platform
 
 pygame.init()
 
-vector =pygame.math.Vector2
-
 WIDTH = 800
 HEIGHT = 600
 FPS = 60
@@ -19,11 +17,9 @@ pygame.display.set_caption("Platformer")
 
 #Initialize player
 player = Player(0, HEIGHT-20, 64, 64)
-player.pos = vector((10,385))
-player.vel = vector(0,0)
-player.acc = vector(0,0)
+
 #Initialize floor
-floor = Platform(WIDTH, HEIGHT, WIDTH, 20)
+floor = Platform(0, HEIGHT-20, WIDTH, 20)
 
 #Create Sprite Group
 all_sprites = pygame.sprite.Group()
@@ -36,9 +32,13 @@ while True:
             pygame.quit()
             sys.exit()
     displayWindow.fill((0,0,0))
+    player.move(ACCELERATION, FRICTION, WIDTH)
 
     for entity in all_sprites:
+       
         displayWindow.blit(entity.surface, entity.rectangle)
 
+    
     pygame.display.update()
     FramesPerSecond.tick(FPS)
+    
