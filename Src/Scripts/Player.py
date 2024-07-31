@@ -1,7 +1,8 @@
 import pygame
+import Platform
 
 class Player (pygame.sprite.Sprite):
-    def __init__(self,x: int,y: int, w: int, h: int):
+    def __init__(self,x: int,y: int, w: int, h: int ):
         super().__init__()
         self.vector =pygame.math.Vector2
         self.surface = pygame.Surface((w,h))
@@ -12,7 +13,7 @@ class Player (pygame.sprite.Sprite):
         self.acc = self.vector(0, 0)
     
     def move(self, accelaration, friction, screen_width):
-        self.acc = self.vector(0, 0)
+        self.acc = self.vector(0, 0.5)
 
         pressed_key = pygame.key.get_pressed()
         if pressed_key[pygame.K_a]:
@@ -26,3 +27,13 @@ class Player (pygame.sprite.Sprite):
 
         
         self.rectangle.midbottom = self.pos
+    
+    def get_world_objects(self, player, platforms: pygame.sprite.Group, boolean):
+        self._player = player
+        self._platforms = platforms
+        self._boolean = boolean
+    
+
+
+    def update(self):
+        hits = pygame.sprite.spritecollide(PLAYER)

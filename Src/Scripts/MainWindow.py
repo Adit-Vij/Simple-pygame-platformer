@@ -8,7 +8,7 @@ pygame.init()
 WIDTH = 800
 HEIGHT = 600
 FPS = 60
-ACCELERATION = 0.5
+ACCELERATION = 0.7
 FRICTION = -0.12
 
 FramesPerSecond = pygame.time.Clock()
