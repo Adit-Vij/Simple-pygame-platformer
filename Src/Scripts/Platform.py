@@ -5,4 +5,4 @@ class Platform (pygame.sprite.Sprite):
         super().__init__()
         self.surface = pygame.Surface((w,h))
         self.surface.fill((228, 89, 76))
-        self.rectangle = self.surface.get_rect(topleft = (x,y))
+        self.rect = self.surface.get_rect(topleft = (x,y))
