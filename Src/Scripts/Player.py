@@ -1,67 +1,59 @@
 import pygame
+import Platform
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self,x: int,y: int):
+class Player (pygame.sprite.Sprite):
+    def __init__(self,x: int,y: int, w: int, h: int ):
         super().__init__()
-        self.image = pygame.Surface((50,50))
-        self.image.fill((0,255,0))
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.speed = 700
-        self.gravity = 150
-        self.velocity_y = 0
-        self.is_on_ground = False
-        self.jump_strength = -2000
-        self.is_jumping = False
+        self.vector =pygame.math.Vector2
+        self.surface = pygame.Surface((w,h))
+        self.surface.fill((134, 196, 243))
+        self.rect = self.surface.get_rect(topleft = (x,y))
+        self.pos = self.vector(x+(w/2),y)
+        self.vel = self.vector(0, 0)
+        self.acc = self.vector(0, 0)
+        self.jumping = False
+    
+    def move(self, accelaration, friction, gravity):
+        self.acc = self.vector(0, gravity)
 
-        '''
-        ----Variables Advanced For Advanced Features----
-        '''
-        self.dash_speed = 4000
-        self.jump_dash_count = 0
+        pressed_key = pygame.key.get_pressed()
+        if pressed_key[pygame.K_a]:
+            self.acc.x = -accelaration
+        if pressed_key[pygame.K_d]:
+            self.acc.x = accelaration
 
-    def update(self,keys,dt):
-        #self.default_speed = self.speed
-        self.move_speed = self.speed*dt
-        jump_strength = self.jump_strength*dt
-        gravity = self.gravity*dt
-        dash_speed = self.dash_speed*dt
-        #Movement Handling
-        '''
-        ----Basic Movement----
-        Left, Right, Jump
-        '''
-        if keys[pygame.K_d]:    #Move Right
-            self.rect.x += self.move_speed
-        if keys[pygame.K_a]:    #Move Left
-            self.rect.x -= self.move_speed
-        if keys[pygame.K_SPACE] and self.is_on_ground:  #Jump Trigger
-            self.is_jumping = True
-        if self.is_jumping:    #Jump
-            self.velocity_y = jump_strength
-            self.is_jumping = False
-            self.jump_dash_count += 2
-        '''
-        ----Advanced Movement----
-        Jump Dash
-        '''
-        if keys[pygame.K_q] and self.jump_dash_count>1:    #Jump Dash
-            self.rect.x += dash_speed
-            self.jump_dash_count -= 1
-            
-        #Gravity
-        self.velocity_y+= gravity
-        self.rect.y += self.velocity_y
+        self.acc.x += self.vel.x * friction
+        self.vel += self.acc
+        self.pos += self.vel + 0.5 * self.acc
+        self.rect.bottomleft = self.pos
+    
+    def get_world_objects(self, player, platforms: pygame.sprite.Group):
+        self._player = player
+        self._platforms = platforms
+        
+    def update(self):
+        hits = pygame.sprite.spritecollide(self._player,self._platforms,False)
+        if self._player.vel.y > 0:
+            if hits:
+                self.vel.y = 0
+                self.jumping = False
+                self.pos.y = hits[0].rect.top+1         
 
-        #Ground Check
-        if self.rect.bottom > 600:
-            self.rect.bottom = 600
-            self.velocity_y = 0
-            #self.jump_dash_count = 2
-            self.is_on_ground = True
-        else:
-            self.is_on_ground = False
+    def jump(self):
+        hits = pygame.sprite.spritecollide(self._player,self._platforms,False)
+        if hits and not self.jumping:
+            self.jumping = True
+            self.vel.y = -15
+    
+    def cancel_jump(self):
+        if self.jumping:
+            if self.vel.y < -3:
+                self.vel.y = -3
 
-    def draw(self,surface):
-        surface.blit(self.image,self.rect)
+    def jump_handler(self, event: pygame.event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                self.jump()
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_SPACE:
+                self.cancel_jump()

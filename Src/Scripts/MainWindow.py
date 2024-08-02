@@ -1,52 +1,52 @@
 import sys
 import pygame
 from Player import Player
-from Obstacle import Obstacle
+from Platform import Platform
 
-#Initialize pygame
-pygame.init()
+pygame.init() 
 
-#Window SetUp
-window_w= 800
-window_h= 600
+WIDTH = 800
+HEIGHT = 600
+FPS = 60
+ACCELERATION = 0.7
+FRICTION = -0.12
+GRAVITY = 0.8
 
-window_size = (window_w,window_h)
+FramesPerSecond = pygame.time.Clock()
+displayWindow = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Platformer")
 
-window = pygame.display.set_mode(window_size)
-pygame.display.set_caption("Sample")
+#Initialize player
+player = Player(0, HEIGHT-20, 64, 64)
 
-#Create a Player Imstance
-player = Player (window_w // 2, window_h // 2)
+#Initialize floor
+floor = Platform(0, HEIGHT-20, WIDTH, 20)
 
-#Create a Obstacle Instance
-obstacle1 = Obstacle(600,600,100,50,player)
 
-#Create sprite group
+#Create Sprite Group
 all_sprites = pygame.sprite.Group()
-#all_sprites.add(player)
-all_sprites.add(obstacle1)
 all_sprites.add(player)
+all_sprites.add(floor)
 
-#Clock
-clock = pygame.time.Clock()
+#Create Platforms Group
+platforms = pygame.sprite.Group()
+platforms.add(floor)
 
-#Main Loop
-running = True
-
-while running:
-    dt = clock.tick(60)/1000.0
+while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            pygame.quit()
+            sys.exit()
+        player.jump_handler(event)
+    displayWindow.fill((0,0,0))
+    player.get_world_objects(player, platforms)
+    player.move(ACCELERATION, FRICTION, GRAVITY)
+    player.update()
 
-    keys= pygame.key.get_pressed()
-    all_sprites.update(keys, dt)
-        
-    window.fill((0,0,0))
-    all_sprites.draw(window)
+    for entity in all_sprites:
+        displayWindow.blit(entity.surface, entity.rect)
 
-    pygame.display.flip()
-        
-
-pygame.quit()
-sys.exit()
+    
+    pygame.display.update()
+    FramesPerSecond.tick(FPS)
+    
