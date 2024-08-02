@@ -11,6 +11,7 @@ class Player (pygame.sprite.Sprite):
         self.pos = self.vector(x+(w/2),y)
         self.vel = self.vector(0, 0)
         self.acc = self.vector(0, 0)
+        self.jumping = False
     
     def move(self, accelaration, friction, gravity):
         self.acc = self.vector(0, gravity)
@@ -35,9 +36,24 @@ class Player (pygame.sprite.Sprite):
         if self._player.vel.y > 0:
             if hits:
                 self.vel.y = 0
+                self.jumping = False
                 self.pos.y = hits[0].rect.top+1         
 
     def jump(self):
         hits = pygame.sprite.spritecollide(self._player,self._platforms,False)
-        if hits:
+        if hits and not self.jumping:
+            self.jumping = True
             self.vel.y = -15
+    
+    def cancel_jump(self):
+        if self.jumping:
+            if self.vel.y < -3:
+                self.vel.y = -3
+
+    def jump_handler(self, event: pygame.event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                self.jump()
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_SPACE:
+                self.cancel_jump()

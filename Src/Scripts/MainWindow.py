@@ -3,7 +3,7 @@ import pygame
 from Player import Player
 from Platform import Platform
 
-pygame.init()
+pygame.init() 
 
 WIDTH = 800
 HEIGHT = 600
@@ -37,9 +37,7 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                player.jump()
+        player.jump_handler(event)
     displayWindow.fill((0,0,0))
     player.get_world_objects(player, platforms)
     player.move(ACCELERATION, FRICTION, GRAVITY)
