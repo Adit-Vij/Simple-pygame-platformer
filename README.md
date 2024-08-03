@@ -6,14 +6,15 @@ This project requires pygame to execute, to install it simple type or copy the f
 verify the installtion using the command: 
 ```pip show pygame``` 
 
-> NOTE: Please make sure you have Python installed properly on your system before running the scripts
+> NOTE: Please make sure you have Python installed properly on your system before running the scripts.
+> NOTE: This project may migrate to pygame-ce soon.
 
 ## Project Structure
 ### Source Code
 All the python scripts are present in the "Scripts" folder, which can be found in the "Src" folder.
 
 - **Driver Script:** The window and the main loop is run by the ```MainWindow.py``` script.
-- **Player Script:** The Player's logic is defined in the ```Player.py``` script. It has basic movements like: moving left, right jumping and some other movements like: jump dash
+- **Player Script:** The Player's logic is defined in the ```Player.py``` script. It has basic movements like: moving left, right jumping.
 - **Obstacle Script:** The Obstacle script contains the obstacle class, so that it's properties like dimesnsions can be modified and multiple instances can be crteated.
 
 ## Running the game
